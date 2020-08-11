@@ -35,6 +35,8 @@ function queryMarineTrafficAPI()
 {
     let csvData;
     console.log('Running queryMarineTrafficAPI');
+    
+    //Trial TOKEN will expire con 18th August 2020
 
     const options = 
     {
