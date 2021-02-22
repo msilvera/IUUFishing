@@ -22,7 +22,12 @@ $Cc = "marisg@adinet.com.uy"
 #$Attachment = "C:\temp\Some random file.txt"
 
 $Subject = "Consulta ANP - Arribos y Ocupación para el día:  " + (Get-Date -format yyyy-MM-dd)
-$Body = "<BR><b>Se adjuntan listados de los arribos previstos y ocupación del puerto para la fecha.</b><BR><HR><HR><BR><BR>" + $Body
+$Body = "<BR><b>Se adjuntan listados de los arribos previstos y ocupación del puerto para la fecha.</b><BR>" `
+    + "Saluda atentamente, <BR>" `
+    + "El Equipo de Pesca INDNR de OCC/Oceanosanos <BR>" `
+    +"<a href='http://oceanosanos.org/'><img class='fit-picture' src='http://oceanosanos.org/wp-content/uploads/2018/05/LOGO.png' alt='Oceanosanos.org' width='88' height='104'></a> <BR><HR><HR><BR><BR>. " `
+    + $Body `
+    + "<BR><b>Disclaimer: Esta información se obtiene directamente del sitio web de ANP: https://www.anp.com.uy/inicio/puertos/montevideo/sistemas/consultas-sobre-arribos</b>"
 
 $SMTPServer = "smtp.sendgrid.net"
 $SMTPPort = "587"
