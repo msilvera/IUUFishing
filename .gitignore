@@ -117,4 +117,6 @@ dist
 
 #resultados
 /powershel-anp-consulta/resultados/
-/powershel-anp-consulta/resultados2/
+/powershel-anp-consulta/old/
+/powershel-anp-consulta/resultadosArribos/
+/powershel-anp-consulta/resultadosOcupacion/

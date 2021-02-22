@@ -1,43 +1,47 @@
-﻿#Este script es el primero a ejecutar. Desde este se invocan los demás.
-
-$Attachment=""
-$Body = ""
+﻿#$PSScriptRoot contains the directory path of the script being executed currently
 
 #1) FILTRO: Pesqueros
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-$WebResponseObj = Invoke-WebRequest -Uri "http://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/ocupacion_puerto.asp" `
+
+$WebResponseObj = Invoke-WebRequest -Uri "https://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/arribos_previstos.asp" `
 -Method "POST" `
 -Headers @{
 "Cache-Control"="max-age=0"
-  "Origin"="http://aplicaciones.anp.com.uy"
+  "sec-ch-ua"="`"Google Chrome`";v=`"87`", `" Not;A Brand`";v=`"99`", `"Chromium`";v=`"87`""
+  "sec-ch-ua-mobile"="?0"
+  "Origin"="https://aplicaciones.anp.com.uy"
   "Upgrade-Insecure-Requests"="1"
   "DNT"="1"
-  "User-Agent"="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36"
-  "Accept"="text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
-  "Referer"="http://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/ocupacion_puerto.asp"
-  "Accept-Encoding"="gzip, deflate"
+  "User-Agent"="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"
+  "Accept"="text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
+  "Sec-Fetch-Site"="same-origin"
+  "Sec-Fetch-Mode"="navigate"
+  "Sec-Fetch-User"="?1"
+  "Sec-Fetch-Dest"="iframe"
+  "Referer"="https://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/arribos_previstos.asp"
+  "Accept-Encoding"="gzip, deflate, br"
   "Accept-Language"="es,en;q=0.9,de;q=0.8,en-US;q=0.7,pt;q=0.6"
-  "Cookie"="ASPSESSIONIDAASARRBS=PFNJIHHDAGOAGEADMINOCIMG; ASPSESSIONIDAABSAQBQ=DNODFBGDMFJOLEDINFNCIPIJ"
+  "Cookie"="_ga=GA1.3.1453185112.1605200219; ASPSESSIONIDQQCTDDTA=NAFAPEBBKGLBGIDNOMFNJPNL; ROUTEIDAPPS=.2; ROUTEIDWEBS=.2; ASPSESSIONIDSQAQBAQC=MHKEDBOBAAEDENEJNPMDIJNB; _gid=GA1.3.342907683.1610563488; _gat=1; ASPSESSIONIDSSBRBBQC=JFPLMFHDONANCCCDDAPEJGMD"
 } `
 -ContentType "application/x-www-form-urlencoded" `
--Body "bn=&co=1&tb=5&ip=1&am=TTTTTTTT&sr=T&Zonas=0&sa=T&Lugares=0&sc=T&o=Z&pfa=T&Submit=++Aceptar++"
+-Body "bn=&ta=0&tb=5&am=TTTTTTTT&o=F&Submit=++Aceptar++"
+
 
 $WebResponseObj| Get-Member
 
 
-
 $fecha = Get-Date -format yyyyMMddHHmm
-$folder = $PSScriptRoot + '\resultadosOcupacion' + '\' + $fecha
-$zipFile = $folder + '\OcupacionPuerto' + (Get-Date -format yyyyMMdd) + '.zip'
+$basefolder = $PSScriptRoot + '\resultadosArribos' 
+$folder = $basefolder + '\' + $fecha
+$zipFile = $folder + '\ArribosPrevistos' + (Get-Date -format yyyyMMdd) + '.zip'
 
 md $folder
 
 
-$filename =  $folder + '/ANP_ocupacion_puerto_' + $fecha +  '.html'
+$filename =  $folder + '/ANP_arribos_previstos' + $fecha +  '.html'
 
 $WebResponseObj.content >> $filename
 
-$Body = "<H1>Ocupación del Puerto: PESQUEROS</H1> <HR>" + $WebResponseObj.content
+$Body =  "<H1>Arribos Previstos: PESQUEROS </H1> <HR>" +  $WebResponseObj.content + $Body 
 
 #Getting table by ID.
 #$oTable = $oHtmlDoc.getElementByID("table6")
@@ -84,7 +88,7 @@ $WebResponseObj2.content >> $newfile
 
 #2) FILTRO: Pesca Congelada
 
-$WebResponseObj = Invoke-WebRequest -Uri "https://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/ocupacion_puerto.asp" `
+$WebResponseObj = Invoke-WebRequest -Uri "https://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/arribos_previstos.asp" `
 -Method "POST" `
 -Headers @{
 "Cache-Control"="max-age=0"
@@ -99,29 +103,29 @@ $WebResponseObj = Invoke-WebRequest -Uri "https://aplicaciones.anp.com.uy/montev
   "Sec-Fetch-Mode"="navigate"
   "Sec-Fetch-User"="?1"
   "Sec-Fetch-Dest"="iframe"
-  "Referer"="https://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/ocupacion_puerto.asp"
+  "Referer"="https://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/arribos_previstos.asp"
   "Accept-Encoding"="gzip, deflate, br"
   "Accept-Language"="es,en;q=0.9,de;q=0.8,en-US;q=0.7,pt;q=0.6"
-  "Cookie"="_ga=GA1.3.1453185112.1605200219; ASPSESSIONIDQQCTDDTA=NAFAPEBBKGLBGIDNOMFNJPNL; ROUTEIDAPPS=.2; ROUTEIDWEBS=.2; ASPSESSIONIDSQAQBAQC=MHKEDBOBAAEDENEJNPMDIJNB; _gid=GA1.3.342907683.1610563488; ASPSESSIONIDSSBRBBQC=JFPLMFHDONANCCCDDAPEJGMD; _gat=1"
+  "Cookie"="_ga=GA1.3.1453185112.1605200219; ASPSESSIONIDQQCTDDTA=NAFAPEBBKGLBGIDNOMFNJPNL; ROUTEIDAPPS=.2; ROUTEIDWEBS=.2; ASPSESSIONIDSQAQBAQC=MHKEDBOBAAEDENEJNPMDIJNB; _gid=GA1.3.342907683.1610563488; ASPSESSIONIDSSBRBBQC=JFPLMFHDONANCCCDDAPEJGMD"
 } `
 -ContentType "application/x-www-form-urlencoded" `
--Body "bn=&co=1&tb=20&ip=1&am=TTTTTTTT&sr=T&Zonas=0&sa=T&Lugares=0&sc=T&o=Z&pfa=T&Submit=++Aceptar++"
+-Body "bn=&ta=0&tb=20&am=TTTTTTTT&o=F&Submit=++Aceptar++"
+
 
 $WebResponseObj| Get-Member
 
 
-
 #$fecha = Get-Date -format yyyyMMddHHmm
-#$folder = 'C:\Users\Mariana\CODE\iuu-fishing-occ\powershel-anp-consulta\resultadosOcupacion' + '\' + $fecha
+#$folder = 'C:\Users\Mariana\CODE\iuu-fishing-occ\powershel-anp-consulta\resultadosArribos' + '\' + $fecha
 
 #md $folder
 
 
-$filename =  $folder + '/ANP_ocupacion_puerto_congelada' + $fecha +  '.html'
+$filename =  $folder + '/ANP_arribos_previstos_congelada' + $fecha +  '.html'
 
 $WebResponseObj.content >> $filename
-
-$Body =  "<H1>Ocupación del Puerto: PESCA CONGELADA </H1> <HR>" + $WebResponseObj.content + $Body 
+ 
+$Body = "<H1>Arribos Previstos: PESCA CONGELADA </H1> <HR>"  + $WebResponseObj.content + $Body 
 
 #Getting table by ID.
 #$oTable = $oHtmlDoc.getElementByID("table6")
@@ -164,12 +168,9 @@ $WebResponseObj2.content >> $newfile
 
 
 }
-#Compress-Archive -LiteralPath $folder -DestinationPath $zipFile
-
-
 #3) FILTRO: REEFERS
 
-$WebResponseObj = Invoke-WebRequest -Uri "https://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/ocupacion_puerto.asp" `
+$WebResponseObj = Invoke-WebRequest -Uri "https://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/arribos_previstos.asp" `
 -Method "POST" `
 -Headers @{
 "Cache-Control"="max-age=0"
@@ -184,27 +185,30 @@ $WebResponseObj = Invoke-WebRequest -Uri "https://aplicaciones.anp.com.uy/montev
   "Sec-Fetch-Mode"="navigate"
   "Sec-Fetch-User"="?1"
   "Sec-Fetch-Dest"="iframe"
-  "Referer"="https://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/ocupacion_puerto.asp"
+  "Referer"="https://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/arribos_previstos.asp"
   "Accept-Encoding"="gzip, deflate, br"
   "Accept-Language"="es,en;q=0.9,de;q=0.8,en-US;q=0.7,pt;q=0.6"
   "Cookie"="_ga=GA1.3.1453185112.1605200219; _gid=GA1.3.349174868.1614006115; ASPSESSIONIDSQBSDAQC=EADLBPMBNELNMGFHPIDKAAHL; ROUTEIDAPPS=.2; ROUTEIDAPPSSL=.2; ROUTEIDWEBS=.2; _gat=1"
 } `
 -ContentType "application/x-www-form-urlencoded" `
--Body "bn=&co=1&tb=10&ip=1&am=TTTTTTTT&sr=T&Zonas=0&sa=T&Lugares=0&sc=T&o=Z&pfa=T&Submit=++Aceptar++"
+-Body "bn=&ta=0&tb=10&am=TTTTTTTT&o=F&Submit=++Aceptar++"
+
 
 $WebResponseObj| Get-Member
 
 
-#md $folder
-
-
-$filename =  $folder + '/ANP_ocupacion_puerto_reefers' + $fecha +  '.html'
+$filename =  $folder + '/ANP_arribos_previstos_reefers' + $fecha +  '.html'
 
 $WebResponseObj.content >> $filename
+ 
+$Body = "<H1>Arribos Previstos: REEFERS </H1> <HR>"  + $WebResponseObj.content + $Body 
 
-$Body =  "<H1>Ocupación del Puerto: REEFERS </H1> <HR>" + $WebResponseObj.content + $Body 
+#Getting table by ID.
+#$oTable = $oHtmlDoc.getElementByID("table6")
+#----------
 
 
+#[regex]$regex = "(?s)<TABLE ID=.*?</TABLE>"
 [regex]$regex ="(?s)<A HREF=.*?>"
 $tables = $regex.matches((GC $filename -raw)).groups.value
 
@@ -240,18 +244,8 @@ $WebResponseObj2.content >> $newfile
 
 
 }
+
 Compress-Archive -LiteralPath $folder -DestinationPath $zipFile
 
 
-#-------------------------------------------
-
-#Now Execute the other scripts
-$tables=$null
-$WebResponseObj=$null
-
-#cargo variable para el envío del mail al final del proceso
-$Attachment =  $zipFile 
-
-. "$PSScriptRoot\Consulta-ANP-Arribos-Previstos.ps1"
-. "$PSScriptRoot\SendEmail.ps1"
-
+$Attachment = $Attachment + ';' + $zipFile 
