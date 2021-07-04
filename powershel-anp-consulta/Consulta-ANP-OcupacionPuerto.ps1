@@ -35,9 +35,14 @@ md $folder
 
 $filename =  $folder + '/ANP_ocupacion_puerto_' + $fecha +  '.html'
 
-$WebResponseObj.content >> $filename
+$data = $WebResponseObj.content
+$data = $data -replace 'datos_arribos.asp','https://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/datos_arribos.asp'
+$data >> $filename
 
-$Body = "<H1>Ocupación del Puerto: PESQUEROS</H1> <HR>" + $WebResponseObj.content
+
+#$WebResponseObj.content >> $filename
+
+$Body = "<H1>Ocupación del Puerto: PESQUEROS</H1> <HR>" + $data
 
 #Getting table by ID.
 #$oTable = $oHtmlDoc.getElementByID("table6")
@@ -119,9 +124,12 @@ $WebResponseObj| Get-Member
 
 $filename =  $folder + '/ANP_ocupacion_puerto_congelada' + $fecha +  '.html'
 
-$WebResponseObj.content >> $filename
+$data = $WebResponseObj.content
+$data = $data -replace 'datos_arribos.asp','https://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/datos_arribos.asp'
+$data >> $filename
+#$WebResponseObj.content >> $filename
 
-$Body =  "<H1>Ocupación del Puerto: PESCA CONGELADA </H1> <HR>" + $WebResponseObj.content + $Body 
+$Body =  "<H1>Ocupación del Puerto: PESCA CONGELADA </H1> <HR>" + $data + $Body 
 
 #Getting table by ID.
 #$oTable = $oHtmlDoc.getElementByID("table6")
@@ -197,12 +205,16 @@ $WebResponseObj| Get-Member
 
 #md $folder
 
+$data = $WebResponseObj.content
+$data = $data -replace 'datos_arribos.asp','https://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/datos_arribos.asp'
 
 $filename =  $folder + '/ANP_ocupacion_puerto_reefers' + $fecha +  '.html'
 
-$WebResponseObj.content >> $filename
+#$WebResponseObj.content >> $filename
+ $data >> $filename
 
-$Body =  "<H1>Ocupación del Puerto: REEFERS </H1> <HR>" + $WebResponseObj.content + $Body 
+#$Body =  "<H1>Ocupación del Puerto: REEFERS </H1> <HR>" + $WebResponseObj.content + $Body 
+$Body =  "<H1>Ocupación del Puerto: REEFERS </H1> <HR>" + $data + $Body 
 
 
 [regex]$regex ="(?s)<A HREF=.*?>"
@@ -241,6 +253,86 @@ $WebResponseObj2.content >> $newfile
 
 }
 Compress-Archive -LiteralPath $folder -DestinationPath $zipFile
+
+
+#4) FILTRO: CARGA GENERAL
+
+$WebResponseObj = Invoke-WebRequest -Uri "https://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/ocupacion_puerto.asp" `
+-Method "POST" `
+-Headers @{
+"Cache-Control"="max-age=0"
+  "sec-ch-ua"="`" Not;A Brand`";v=`"99`", `"Google Chrome`";v=`"91`", `"Chromium`";v=`"91`""
+  "sec-ch-ua-mobile"="?0"
+  "Origin"="https://aplicaciones.anp.com.uy"
+  "Upgrade-Insecure-Requests"="1"
+  "DNT"="1"
+  "User-Agent"="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+  "Accept"="text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
+  "Sec-Fetch-Site"="same-origin"
+  "Sec-Fetch-Mode"="navigate"
+  "Sec-Fetch-User"="?1"
+  "Sec-Fetch-Dest"="iframe"
+  "Referer"="https://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/ocupacion_puerto.asp"
+  "Accept-Encoding"="gzip, deflate, br"
+  "Accept-Language"="en-US,en;q=0.9,es;q=0.8,de;q=0.7,pt;q=0.6"
+  "Cookie"="_ga=GA1.3.231795557.1625426723; _gid=GA1.3.1810236492.1625426723; ASPSESSIONIDACDSTQBT=HHBMOJNALLNOKDGCALIGBGGC; ROUTEIDAPPS=.2; ROUTEIDAPPSSL=.2; ROUTEIDWEBS=.2"
+} `
+-ContentType "application/x-www-form-urlencoded" `
+-Body "bn=&co=1&tb=9&ip=1&am=TTTTTTTT&sr=T&Zonas=0&sa=T&Lugares=0&sc=T&o=Z&pfa=T&Submit=++Aceptar++"
+
+$WebResponseObj| Get-Member
+
+
+#md $folder
+
+$data = $WebResponseObj.content
+$data = $data -replace 'datos_arribos.asp','https://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/datos_arribos.asp'
+
+$filename =  $folder + '/ANP_ocupacion_puerto_cargageneral' + $fecha +  '.html'
+
+#$WebResponseObj.content >> $filename
+$data >> $filename
+
+#$Body =  "<H1>Ocupación del Puerto: CARGA GENERAL </H1> <HR>" + $WebResponseObj.content + $Body 
+$Body =  "<H1>Ocupación del Puerto: CARGA GENERAL </H1> <HR>" + $data + $Body 
+
+[regex]$regex ="(?s)<A HREF=.*?>"
+$tables = $regex.matches((GC $filename -raw)).groups.value
+
+$tables
+
+ForEach($string in $tables){
+
+$url = ''
+$uri=''
+$newfile=''
+
+$url = $string -replace '<A HREF="',''
+$url = $url -replace '">',''
+$url
+
+$newfile = (($url -replace '.asp\?','_') -replace '&','_')-replace '=','_'
+$newfile = $folder + '/' + $newfile  + $fecha +  '.html'
+$newfile
+
+$uri = "http://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/" + $url
+
+$WebResponseObj2 = Invoke-WebRequest -Uri $uri -Headers @{
+"Upgrade-Insecure-Requests"="1"
+  "DNT"="1"
+  "User-Agent"="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36"
+  "Accept"="text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
+  "Referer"="http://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/ocupacion_puerto.asp"
+  "Accept-Encoding"="gzip, deflate"
+  "Accept-Language"="es,en;q=0.9,de;q=0.8,en-US;q=0.7,pt;q=0.6"
+  "Cookie"="ASPSESSIONIDAASARRBS=PFNJIHHDAGOAGEADMINOCIMG; ASPSESSIONIDAABSAQBQ=DNODFBGDMFJOLEDINFNCIPIJ"
+}
+$WebResponseObj2.content >> $newfile
+
+}
+
+Compress-Archive -LiteralPath $folder -DestinationPath $zipFile
+
 
 
 #-------------------------------------------
