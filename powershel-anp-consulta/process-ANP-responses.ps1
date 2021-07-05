@@ -1,7 +1,7 @@
 ﻿#List all directories in path
 
 
-$initial_path = 'C:\Users\Mariana\CODE\iuu-fishing-occ\powershel-anp-consulta\resultados'
+$initial_path = 'C:\Users\msilvera\Documents\CODE\iuu-fishing-occ\IUUFishing\powershel-anp-consulta\resultadosArribos'
 $pathToOutputFile = $initial_path + '\' +  "BrokenFiles.csv"
 $pathToOutputVesselsFile = $initial_path + '\' +  "ListOfVessels.csv"
 

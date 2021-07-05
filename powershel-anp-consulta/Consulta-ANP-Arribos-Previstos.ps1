@@ -70,10 +70,12 @@ $url = $url -replace '">',''
 $url
 
 $newfile = (($url -replace '.asp\?','_') -replace '&','_')-replace '=','_'
+$newfile =  $newfile -replace "https://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/",""
 $newfile = $folder + '/' + $newfile  + $fecha +  '.html'
 $newfile
 
-$uri = "http://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/" + $url
+#$uri = "http://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/" + $url
+$uri = $url
 
 $WebResponseObj2 = Invoke-WebRequest -Uri $uri -Headers @{
 "Upgrade-Insecure-Requests"="1"
@@ -158,10 +160,12 @@ $url = $url -replace '">',''
 $url
 
 $newfile = (($url -replace '.asp\?','_') -replace '&','_')-replace '=','_'
+$newfile =  $newfile -replace "https://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/",""
 $newfile = $folder + '/' + $newfile  + $fecha +  '.html'
 $newfile
 
-$uri = "http://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/" + $url
+#$uri = "http://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/" + $url
+$uri =  $url
 
 $WebResponseObj2 = Invoke-WebRequest -Uri $uri -Headers @{
 "Upgrade-Insecure-Requests"="1"
@@ -239,10 +243,12 @@ $url = $url -replace '">',''
 $url
 
 $newfile = (($url -replace '.asp\?','_') -replace '&','_')-replace '=','_'
+$newfile =  $newfile -replace "https://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/",""
 $newfile = $folder + '/' + $newfile  + $fecha +  '.html'
 $newfile
 
-$uri = "http://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/" + $url
+#$uri = "http://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/" + $url
+$uri = $url
 
 $WebResponseObj2 = Invoke-WebRequest -Uri $uri -Headers @{
 "Upgrade-Insecure-Requests"="1"
@@ -321,10 +327,12 @@ $url = $url -replace '">',''
 $url
 
 $newfile = (($url -replace '.asp\?','_') -replace '&','_')-replace '=','_'
+$newfile =  $newfile -replace "https://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/",""
 $newfile = $folder + '/' + $newfile  + $fecha +  '.html'
 $newfile
 
-$uri = "http://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/" + $url
+#$uri = "http://aplicaciones.anp.com.uy/montevideo/sistemas/consultas/arribos/" + $url
+$uri =  $url
 
 $WebResponseObj2 = Invoke-WebRequest -Uri $uri -Headers @{
 "Upgrade-Insecure-Requests"="1"
@@ -341,6 +349,9 @@ $WebResponseObj2.content >> $newfile
 
 }
 
+
+#summarize all files
+. "$PSScriptRoot\process-ANP-responses-find-in-iuu-list.ps1"
 
 #Zipeo todos los archivos 
 
